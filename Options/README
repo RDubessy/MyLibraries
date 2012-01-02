@@ -1,0 +1,29 @@
+This library provide an option parser to read command line options and
+configuration files.
+It is particularly usefull for configuration files used in simulations, for
+example.
+
+Installation
+Issue the following command in the local directory:
+$make all
+
+In order to properly install the library you will have to:
+    - create the two directory (if non existent) /opt/include and /opt/lib
+    - issue 'make install' as root in the local directory
+    - add '/opt/lib' to the LD_LIBRARY_PATH environnement variable:
+        $export LD_LIBRARY_PATH=/opt/lib:$LD_LIBRARY_PATH
+
+If the library is successfully installed you should be able to compile and run a
+small example program:
+$make test
+$./test
+
+The library is called liboptions.so and the corresponding header file is
+common.h.
+
+Remove
+Issue:
+$make clean
+to remove the temporary build objects, and:
+$make uninstall
+to remove the header and library from your computer.
