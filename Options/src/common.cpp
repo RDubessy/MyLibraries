@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "common.h"
-bool readString(string s, ConfigMap &config, string &appKey) {
+bool readString(std::string s, ConfigMap &config, std::string &appKey) {
     bool res=true;
     bool verbose=(config["verbose"].size()>0);
     if(s.size()==0)                              //Empty line, skipping
@@ -13,13 +13,13 @@ bool readString(string s, ConfigMap &config, string &appKey) {
             case -1:
             case 1:
                 if(verbose)
-                    cerr << "[E] Bad marker : '" << s << "' !" << endl;
+                    std::cerr << "[E] Bad marker : '" << s << "' !" << std::endl;
                 res=false;
                 break;
             default:
                 appKey=s.substr(1,index-1);
                 if(verbose)
-                    cerr << "[I] Found marker : '" << appKey << "'." << endl;
+                    std::cerr << "[I] Found marker : '" << appKey << "'." << std::endl;
                 appKey+="::";
         }
     } else {
@@ -48,28 +48,30 @@ bool readString(string s, ConfigMap &config, string &appKey) {
         }
         if(res) {
             //string key=s.substr(1,indexA-1);
-            string key=s.substr(0,indexB);
+            std::string key=s.substr(0,indexB);
             if(verbose)
-                cerr << "[I] Found option : '" << key << "'." << endl;
-            string value=s.substr(indexB+1);
-            config[appKey+key]=value;
+                std::cerr << "[I] Found option : '" << key << "'." << std::endl;
+            key=appKey+key;
+            std::string value=s.substr(indexB+1);
+            if(config[key].size()==0)     //Do not erase previous value.
+                config[key]=value;
             if(verbose)
-                cerr << "[I] '" << appKey+key << "=" << value << "'." << endl;
+                std::cerr << "[I] '" << appKey+key << "=" << value << "'." << std::endl;
         }
         else
-            cerr << "[E] Bad option : '" << s << "' !" << endl;
+            std::cerr << "[E] Bad option : '" << s << "' !" << std::endl;
     }
     return res;
 }
 bool parseOptions(const int argc, char *argv[], ConfigMap &config) {
     bool res=true;
     if(argc==1) {
-        cerr << "[W] Need at least one argument !" << endl;
+        std::cerr << "[W] Need at least one argument !" << std::endl;
         res=false;
     }
     int index;
     for(int i=1;i<argc;i++) {
-        string s(argv[i]);
+        std::string s(argv[i]);
         if(s[0]=='-') {
             switch(s[1]) {
                 case '-':                        //Long style option
@@ -81,13 +83,13 @@ bool parseOptions(const int argc, char *argv[], ConfigMap &config) {
                                 config[s]=" ";
                             break;
                         case 0:
-                            cerr << "[W] Bad cmd line option : ' --" << s
-                                << "' ! [ignored]" << endl;
+                            std::cerr << "[W] Bad cmd line option : ' --" << s
+                                << "' ! [ignored]" << std::endl;
                             res=false;
                             break;
                         default:
-                            string key=s.substr(0,index);
-                            string value=s.substr(index+1);
+                            std::string key=s.substr(0,index);
+                            std::string value=s.substr(index+1);
                             config[key]=value;
                     }
                     break;
@@ -95,17 +97,16 @@ bool parseOptions(const int argc, char *argv[], ConfigMap &config) {
                     config["verbose"]=" ";
                     break;
                 default:
-                    cerr << "[W] Bad cmd line option : ' --" << s
-                        << "' ! [ignored]" << endl;
+                    std::cerr << "[W] Bad cmd line option : ' --" << s
+                        << "' ! [ignored]" << std::endl;
                     res=false;
             }
         }
         else {                               //Valid config file ?
             if(config["configFile"].size()>0) { //Conflict !
-                cerr << "[W] Conflicting config file names !" << endl;
+                std::cerr << "[W] Conflicting config file names !" << std::endl;
                 res=false;
-            }
-            else {
+            } else {
                 config["configFile"]=s;
             }
         }
@@ -113,7 +114,7 @@ bool parseOptions(const int argc, char *argv[], ConfigMap &config) {
     return res;
 }
 void printUsage(char argv[]) {
-    cerr << "This program is based on the 'progTemplate' files, developped by "
+    std::cerr << "This program is based on the 'progTemplate' files, developped by "
         << "R. Dubessy.\n"
         << "More information at www-link\n"
         << "Usage :\n"
@@ -121,11 +122,11 @@ void printUsage(char argv[]) {
         << "Where 'filename' is the name of a valid config file\n"
         << "and 'options' stand for :\n"
         << "\t--usage, --help : display this screen and exit."
-        << endl;
+        << std::endl;
     return;
 }
-string strip(string s) {
-    string res("");
+std::string strip(std::string s) {
+    std::string res("");
     int n=s.size();
     for(int i=0;i<n;i++) {
         if(s[i]=='#')
@@ -136,16 +137,16 @@ string strip(string s) {
     return res;
 }
 int parseConfig(ConfigMap &config) {
-    string appKey("");
-    ifstream file(config["configFile"].c_str(),std::ios::in);
+    std::string appKey("");
+    std::ifstream file(config["configFile"].c_str(),std::ios::in);
     if(!file.good()) {
-        cerr << "[E] Error opening the configuration file : '" 
-            << config["configFile"] << "' !" << endl;
+        std::cerr << "[E] Error opening the configuration file : '" 
+            << config["configFile"] << "' !" << std::endl;
         return false;
     }
     bool res=true;
     while(file) {
-        string s;
+        std::string s;
         getline(file,s);
         s=strip(s);
         res=res && readString(s,config,appKey);
@@ -153,19 +154,19 @@ int parseConfig(ConfigMap &config) {
     file.close();
     return res;
 }
-int getConfig(ConfigMap &config, string name, int def) {
+int getConfig(ConfigMap &config, std::string name, int def) {
     if(config[name].size()>0)
         return atoi(config[name].c_str());
-    cerr << "[W] Key : '" << name.c_str() 
-        << "' not found, using default value : " << def << endl;
+    std::cerr << "[W] Key : '" << name.c_str() 
+        << "' not found, using default value : " << def << std::endl;
     return def;
 }
-double getConfig(ConfigMap &config, string name, double def) {
+double getConfig(ConfigMap &config, std::string name, double def) {
     if(config[name].size()>0)
         return atof(config[name].c_str());
-    cerr << "[W] Key : '" << name.c_str() 
+    std::cerr << "[W] Key : '" << name.c_str() 
         << "' not found, using default value : "
-        << def << endl;
+        << def << std::endl;
     return def;
 }
 /* common.cpp */

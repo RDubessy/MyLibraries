@@ -6,6 +6,7 @@ example.
 Installation
 Issue the following command in the local directory:
 $make all
+This should create a liboptions.so.1.0 file in the local 'lib' directory.
 
 In order to properly install the library you will have to:
     - create the two directory (if non existent) /opt/include and /opt/lib
