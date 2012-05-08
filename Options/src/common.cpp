@@ -79,8 +79,7 @@ bool parseOptions(const int argc, char *argv[], ConfigMap &config) {
                     index=s.find('=');
                     switch(index) {
                         case -1:
-                            if(s.compare("usage")||s.compare("help"))
-                                config[s]=" ";
+                            config[s]="";
                             break;
                         case 0:
                             std::cerr << "[W] Bad cmd line option : ' --" << s
@@ -168,5 +167,85 @@ double getConfig(ConfigMap &config, std::string name, double def) {
         << "' not found, using default value : "
         << def << std::endl;
     return def;
+}
+range<int> getConfig(ConfigMap &config,std::string name,range<int> def) {
+    std::string rval=config[name];
+    if(rval.size()==0)
+        return def;
+    range<int> res=def;
+    int index=rval.find(':');
+    switch(index) {
+        case 0:
+            break;
+        case -1:
+            res.min=res.max=atoi(rval.c_str());
+            res.incr=1;
+            break;
+        default:
+            {
+                res.min=atoi(rval.substr(0,index).c_str());
+                rval=rval.substr(index+1);
+                if(rval.size()==0) {
+                    res.max=res.min;
+                    res.incr=1;
+                    break;
+                }
+                int index2=rval.find(':');
+                switch(index2) {
+                    case 0:
+                        res.max=atoi(rval.substr(1).c_str());;
+                        res.incr=1;
+                        break;
+                    case -1:
+                        res.max=atoi(rval.c_str());
+                        res.incr=1;
+                        break;
+                    default:
+                        res.incr=atoi(rval.substr(0,index2).c_str());
+                        res.max=atoi(rval.substr(index2+1).c_str());
+                }
+            }
+    }
+    return res;
+}
+range<double> getConfig(ConfigMap &config,std::string name,range<double> def) {
+    std::string rval=config[name];
+    if(rval.size()==0)
+        return def;
+    range<double> res=def;
+    int index=rval.find(':');
+    switch(index) {
+        case 0:
+            break;
+        case -1:
+            res.min=res.max=atof(rval.c_str());
+            res.incr=1;
+            break;
+        default:
+            {
+                res.min=atof(rval.substr(0,index).c_str());
+                rval=rval.substr(index+1);
+                if(rval.size()==0) {
+                    res.max=res.min;
+                    res.incr=1;
+                    break;
+                }
+                int index2=rval.find(':');
+                switch(index2) {
+                    case 0:
+                        res.max=atof(rval.substr(1).c_str());;
+                        res.incr=1;
+                        break;
+                    case -1:
+                        res.max=atof(rval.c_str());
+                        res.incr=1;
+                        break;
+                    default:
+                        res.incr=atof(rval.substr(0,index2).c_str());
+                        res.max=atof(rval.substr(index2+1).c_str());
+                }
+            }
+    }
+    return res;
 }
 /* common.cpp */

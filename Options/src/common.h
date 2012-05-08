@@ -18,5 +18,12 @@ std::string strip(std::string);
 int parseConfig(ConfigMap &);
 int getConfig(ConfigMap &,std::string,int);
 double getConfig(ConfigMap &,std::string,double);
+template<class T> struct range {
+    T min;
+    T max;
+    T incr;
+};
+range<int> getConfig(ConfigMap &,std::string,range<int>);
+range<double> getConfig(ConfigMap &,std::string,range<double>);
 #endif
 /* common.h */
