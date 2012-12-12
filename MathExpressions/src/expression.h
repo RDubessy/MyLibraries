@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 Romain Dubessy */
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 #include <iostream>

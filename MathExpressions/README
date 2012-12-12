@@ -1,15 +1,14 @@
-This library provide an option parser to read command line options and
-configuration files.
+This library provide an mathematical expression parser. 
 It is particularly usefull for configuration files used in simulations, for
 example.
 
 Installation
 Issue the following command in the local directory:
 $make all
-This should create a liboptions.so.1.0 file in the local 'lib' directory.
+This should create a libmathexpr.so.1.0 file in the local 'lib' directory.
 
 In order to properly install the library you will have to:
-    - create the two directory (if non existent) /opt/include and /opt/lib
+    - create the two directories (if non existent) /opt/include and /opt/lib
     - issue 'make install' as root in the local directory
     - add '/opt/lib' to the LD_LIBRARY_PATH environnement variable:
         $export LD_LIBRARY_PATH=/opt/lib:$LD_LIBRARY_PATH
@@ -19,8 +18,8 @@ small example program:
 $make test
 $./test
 
-The library is called liboptions.so and the corresponding header file is
-common.h.
+The library is called libmathexpr.so and the corresponding header file is
+expression.h.
 
 Clean the project
 Issue the following command:

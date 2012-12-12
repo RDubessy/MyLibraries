@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 Romain Dubessy */
+/* Copyright (C) 2012 Romain Dubessy */
 #ifndef MYEXCEPTIONS_H
 #define MYEXCEPTIONS_H
 #include <exception>

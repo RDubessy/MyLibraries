@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 Romain Dubessy */
 #ifndef COMMON_H
 #define COMMON_H
 #include <string>

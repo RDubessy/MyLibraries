@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 Romain Dubessy */
+/* Copyright (C) 2012 Romain Dubessy */
 #ifndef MATRIX_H
 #define MATRIX_H
 #include <iostream>
