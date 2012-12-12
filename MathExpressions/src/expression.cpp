@@ -177,6 +177,11 @@ void *Variable::evaluate(VarDef &vars) {
         throw undefVar;
     return vars[_var]->evaluate(vars);
 }
+bool Variable::find(const char *var) {
+    if(_var==var)
+        return true;
+    return false;
+}
 /* }}} */
 /* BinaryOp class implementation {{{ */
 /* BinaryOp {{{ */
@@ -387,6 +392,9 @@ void *BinaryOp::evaluate(VarDef &vars) {
     return tmp->evaluate(vars);
 }
 /* }}} */
+bool BinaryOp::find(const char *var) {
+    return _left->find(var) || _right->find(var);
+}
 /* }}} */
 /* SingleValFunction class implementation {{{ */
 SingleValFunction::SingleValFunction(const string &fun, const string &s) {
@@ -420,6 +428,9 @@ void *SingleValFunction::evaluate(VarDef &vars) {
     if(typeid(*tmp)!=typeid(Constant))
         throw undefVar;
     return new double(funcPointers[_fun](*((double*)tmp->evaluate(vars))));
+}
+bool SingleValFunction::find(const char *var) {
+    return _arg->find(var);
 }
 /* }}} */
 /* expression.cpp */

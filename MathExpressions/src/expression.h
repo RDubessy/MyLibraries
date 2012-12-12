@@ -32,6 +32,8 @@ class Expression {
         virtual Expression *simplify(VarDef &) =0;
         /*!\brief Evaluate expression method. */
         virtual void *evaluate(VarDef &) =0;
+        /*!\brief Find var in expression method. */
+        virtual bool find(const char *var) =0;
         friend ostream &operator<<(ostream &os, Expression *exp);
 };
 /* }}} */
@@ -51,6 +53,7 @@ class Constant : public Expression {
         void *evaluate(VarDef &) { return new double(_c); };
         Constant &operator=(const Constant &other);
         double value(void) const { return _c; };
+        bool find(const char *var) { return false; };
     private:
         double _c; //!<\brief Constant value, stored as a double.
 };
@@ -69,6 +72,7 @@ class BConstant : public Expression {
         void set(void *other) { _b=*((Bra<double>*)other); };
         Expression *simplify(VarDef &) { return this; };
         void *evaluate(VarDef &) { return new Bra<double>(_b); };
+        bool find(const char *var) { return false; };
     private:
         Bra<double> _b; //!<\brief Bra constant value, stored as a vector.
 };
@@ -87,6 +91,7 @@ class KConstant : public Expression {
         void set(void *other) { _k=*((Ket<double>*)other); };
         Expression *simplify(VarDef &) { return this; };
         void *evaluate(VarDef &) { return new Ket<double>(_k); };
+        bool find(const char *var) { return false; };
     private:
         Ket<double> _k; //!<\brief Ket constant value, stored as a vector.
 };
@@ -105,6 +110,7 @@ class MConstant : public Expression {
         void set(void *other) { _m=*((Matrix<double>*)other); };
         Expression *simplify(VarDef &) { return this; };
         void *evaluate(VarDef &) { return new Matrix<double>(_m); };
+        bool find(const char *var) { return false; };
     private:
         Matrix<double> _m; //!<\brief Matrix constant value, stored as a matrix.
 };
@@ -122,6 +128,7 @@ class Variable : public Expression {
         Expression *simplify(VarDef &);
         void *evaluate(VarDef &);
         string name(void) const { return _var; };
+        bool find(const char *var);
     private:
         string _var;    //!<\brief String storing the variable name.
 };
@@ -143,6 +150,7 @@ class BinaryOp : public Expression {
         Expression *left(void) { return _left; };
         Expression *right(void) { return _right; };
         char op(void) const { return _c; };
+        bool find(const char *var);
     private:
         char _c;            //!<\brief Binary operator stored as a char.
         Expression *_left;  //!<\brief Left hand side of the operator.
@@ -165,6 +173,7 @@ class SingleValFunction : public Expression {
         void *evaluate(VarDef &);
         int i() { return _fun; };
         Expression *arg() { return _arg; };
+        bool find(const char *var);
     protected:
         int _fun;           //!<\brief Function unique identifier.
         Expression *_arg;   //!<\brief Argument, stored as an expression.
